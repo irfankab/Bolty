@@ -1,0 +1,160 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+#welcome {
+    font-size: 2em;
+    animation: fadeIn 2s forwards;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.correct-answer {
+    animation: bounce 0.5s ease;
+    background-color: #4CAF50 !important;
+    color: white !important;
+}
+
+.wrong-answer {
+    animation: shake 0.5s ease;
+    background-color: #f44336 !important;
+    color: white !important;
+}
+
+.option-hover {
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+}
+
+#score {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    display: none;
+}
+
+#finalScore {
+    font-size: 1.8em;
+    color: #333;
+    margin-top: 20px;
+    display: none;
+    animation: fadeIn 1s ease;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 24px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 1em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+button:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+input[type="number"] {
+    padding: 12px;
+    font-size: 1em;
+    border: 2px solid #4CAF50;
+    border-radius: 5px;
+    width: 120px;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+input[type="number"]:focus {
+    border-color: #45a049;
+    outline: none;
+    box-shadow: 0 0 5px rgba(76,175,80,0.5);
+}
+
+#timeInput {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+
+#question, #options, #timer, #operation, #difficulty {
+    margin: 20px;
+    display: none;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+#timer {
+    font-size: 1.5em;
+    color: #f44336;
+    font-weight: bold;
+}
+
+#startButton {
+    display: block;
+    margin: 20px auto;
+    background-color: #2196F3;
+}
+
+#startButton:hover {
+    background-color: #1976D2;
+}
+
+#quitButton {
+    background-color: #f44336;
+}
+
+#quitButton:hover {
+    background-color: #d32f2f;
+}
