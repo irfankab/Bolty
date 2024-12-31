@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Challenge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --accent-color: #00ff9d;
+            --wrong-color: #ff4757;
+            --correct-color: #2ed573;
+            --button-hover: #404040;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .welcome-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--accent-color);
+            font-size: 2.5em;
+            font-weight: 600;
+            animation: fadeOut 2s forwards;
+            z-index: 1000;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .game-title {
+            color: var(--accent-color);
+            font-size: 3em;
+            margin: 1rem 0;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color); }
+            to { text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color); }
+        }
+
+        .game-section {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin: 1.5rem 0;
+            display: none;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        button {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 2px solid var(--accent-color);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: var(--accent-color);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 157, 0.3);
+        }
+
+        .score-display {
+            font-size: 1.5em;
+            margin: 1rem 0;
+            color: var(--accent-color);
+            text-align: center;
+            display: none;
+        }
+
+        .timer {
+            font-size: 2em;
+            color: var(--accent-color);
+            text-align: center;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .timer.warning {
+            color: var(--wrong-color);
+            animation: pulse 1s infinite;
+        }
+
+        .question-display {
+            font-size: 2.5em;
+            margin: 1.5rem 0;
+            text-align: center;
+            color: var(--text-primary);
+            display: none;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+            display: none;
+        }
+
+        .correct {
+            animation: correctAnswer 0.5s;
+            background: var(--correct-color) !important;
+            color: var(--bg-primary) !important;
+            border-color: var(--correct-color) !important;
+        }
+
+        .wrong {
+            animation: wrongAnswer 0.5s;
+            background: var(--wrong-color) !important;
+            color: var(--text-primary) !important;
+            border-color: var(--wrong-color) !important;
+        }
+
+        input[type="number"] {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 2px solid var(--accent-color);
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 1.2em;
+            width: 150px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        .final-score {
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .final-score h2 {
+            font-size: 2.5em;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .final-score p {
+            font-size: 1.8em;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes correctAnswer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes wrongAnswer {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            animation: confettiRain 1s linear forwards;
+        }
+
+        @keyframes confettiRain {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(720deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-screen">Math Challenge</div>
+    <div class="game-container">
+        <h1 class="game-title">Math Challenge</h1>
+        <div id="score" class="score-display">Score: 0 | Attempts: <span id="attemptsLeft">3</span></div>
+        
+        <button id="startButton" class="primary-button">Start Challenge</button>
+        <button id="quitButton" class="secondary-button" style="display: none;">Quit Game</button>
+
+        <div id="operation" class="game-section">
+            <h2>Choose Operation</h2>
+            <div class="button-grid">
+                <button data-operation="+">Addition</button>
+                <button data-operation="-">Subtraction</button>
+                <button data-operation="×">Multiplication</button>
+                <button data-operation="÷">Division</button>
+            </div>
+        </div>
+
+        <div id="difficulty" class="game-section">
+            <h2>Select Difficulty</h2>
+            <div class="button-grid">
+                <button data-difficulty="easy">Easy</button>
+                <button data-difficulty="medium">Medium</button>
+                <button data-difficulty="hard">Hard</button>
+            </div>
+        </div>
+
+        <div id="timeInput" class="game-section">
+            <h2>Set Time (seconds)</h2>
+            <input type="number" id="totalTime" min="10" max="300" value="60">
+            <button id="startGameButton">Start Game</button>
+        </div>
+
+        <div id="timer" class="timer">Time Left: <span id="timeLeftDisplay">60</span>s</div>
+        <div id="question" class="question-display"></div>
+        <div id="options" class="options-grid"></div>
+        <div id="finalScore" class="final-score"></div>
+    </div>
+
+    <script>
+        class SoundManager {
+            constructor() {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                this.sounds = {
+                    correct: { frequency: 880, duration: 0.1, type: 'sine' },
+                    wrong: { frequency: 220, duration: 0.2, type: 'square' },
+                    gameOver: { frequency: 440, duration: 0.5, type: 'sawtooth' },
+                    tick: { frequency: 660, duration: 0.05, type: 'sine' }
+                };
+            }
+
+            playSound(soundType) {
+                const sound = this.sounds[soundType];
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+
+                oscillator.type = sound.type;
+                oscillator.frequency.setValueAtTime(sound.frequency, this.audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + sound.duration);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+
+                oscillator.start();
+                oscillator.stop(this.audioContext.currentTime + sound.duration);
+            }
+        }
+
+        class Game {
+            constructor() {
+                this.score = 0;
+                this.attempts = 3;
+                this.timeLeft = 60;
+                this.operation = '';
+                this.difficulty = '';
+                this.timer = null;
+                this.soundManager = new SoundManager();
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                document.getElementById('startButton').onclick = () => this.startGame();
+                document.getElementById('quitButton').onclick = () => this.quitGame();
+                document.querySelectorAll('#operation button').forEach(button => {
+                    button.onclick = () => this.setOperation(button.dataset.operation);
+                });
+                document.querySelectorAll('#difficulty button').forEach(button => {
+                    button.onclick = () => this.setDifficulty(button.dataset.difficulty);
+                });
+                document.getElementById('startGameButton').onclick = () => this.startQuestions();
+            }
+
+            startGame() {
+                this.soundManager.playSound('tick');
+                document.getElementById('startButton').style.display = 'none';
+                document.getElementById('operation').style.display = 'block';
+            }
+
+            setOperation(op) {
+                this.operation = op;
+                this.soundManager.playSound('tick');
+                document.getElementById('operation').style.display = 'none';
+                document.getElementById('difficulty').style.display = 'block';
+            }
+
+            setDifficulty(level) {
+                this.difficulty = level;
+                this.soundManager.playSound('tick');
+                document.getElementById('difficulty').style.display = 'none';
+                document.getElementById('timeInput').style.display = 'block';
+            }
+
+            startQuestions() {
+                this.timeLeft = parseInt(document.getElementById('totalTime').value);
+                document.getElementById('timeInput').style.display = 'none';
+                document.getElementById('score').style.display = 'block';
+                document.getElementById('timer').style.display = 'block';
+                document.getElementById('quitButton').style.display = 'block';
+                
+                this.updateScoreboard();
+                this.startTimer();
+                this.nextQuestion();
+                this.soundManager.playSound('tick');
+            }
+
+            generateQuestion() {
+                let num1, num2;
+                
+                if (this.operation === '÷') {
+                    // For division, ensure we get whole number results
+                    num2 = this.getRandomInt(this.difficulty);
+                    const result = this.getRandomInt(this.difficulty);
+                    num1 = num2 * result;
+                } else {
+                    num1 = this.getRandomInt(this.difficulty);
+                    num2 = this.getRandomInt(this.difficulty);
+                }
+
+                const correctAnswer = this.calculateAnswer(num1, num2);
+                
+                document.getElementById('question').innerText = `${num1} ${this.operation} ${num2} = ?`;
+                document.getElementById('question').style.display = 'block';
+                
+                this.generateOptions(correctAnswer, num1, num2);
+                return correctAnswer;
+            }
+
+            getRandomInt(level) {
+                switch (level) {
+                    case 'easy': return Math.floor(Math.random() * 10) + 1;
+                    case 'medium': return Math.floor(Math.random() * 20) + 1;
+                    case 'hard': return Math.floor(Math.random() * 30) + 1;
+                }
+            }
+
+            calculateAnswer(num1, num2) {
+                switch (this.operation) {
+                    case '+': return num1 + num2;
+                    case '-': return num1 - num2;
+                    case '×': return num1 * num2;
+                    case '÷': return num1 / num2;
+                }
+            }
+
+            generateOptions(correctAnswer, num1, num2) {
+                const options = new Set([correctAnswer]);
+                
+                // Generate confusing but logical wrong answers
+                while (options.size < 4) {
+                    let wrongAnswer;
+                    switch (this.operation) {
+                        case '+':
+                            wrongAnswer = [
+                                num1 + num2 + 1,
+                                num1 + num2 - 1,
+                                num1 * num2,
+                                Math.abs(num1 - num2)
+                            ][options.size - 1];
+                            break;
+                        case '-':
+                            wrongAnswer = [
+                                num1 - num2 + 1,
+                                num1 - num2 - 1,
+                                num1 + num2,
+                                num1 * num2
+                            ][options.size - 1];
+                            break;
+                        case '×':
+                            wrongAnswer = [
+                                num1 * num2 + num1,
+                                num1 * num2 - num2,
+                                num1 + num2,
+                                (num1 * num2) + 1
+                            ][options.size - 1];
+                            break;
+                        case '÷':
+                            wrongAnswer = [
+                                Math.round(num1 / num2) + 1,
+                                Math.round(num1 / num2) - 1,
+                                num1 * num2,
+                                num1 + num2
+                            ][options.size - 1];
+                            break;
+                    }
+                    if (wrongAnswer !== correctAnswer) {
+                        options.add(wrongAnswer);
+                    }
+                }
+
+                const optionsArray = Array.from(options).sort(() => Math.random() - 0.5);
+                const optionsContainer = document.getElementById('options');
+                optionsContainer.innerHTML = '';
+                optionsContainer.style.display = 'grid';
+
+                optionsArray.forEach(option => {
+                    const button = document.createElement('button');
+                    button.innerText = option;
+                    button.onclick = () => this.checkAnswer(option, correctAnswer);
+                    optionsContainer.appendChild(button);
+                });
+            }
+
+            checkAnswer(selectedAnswer, correctAnswer) {
+                const isCorrect = selectedAnswer === correctAnswer;
+                
+                if (isCorrect) {
+                    this.score++;
+                    this.soundManager.playSound('correct');
+                    this.createConfetti();
+                } else {
+                    this.attempts--;
+                    this.soundManager.playSound('wrong');
+                }
+                
+                this.animateAnswer(isCorrect);
+                this.updateScoreboard();
+                
+                if (this.attempts > 0 && this.timeLeft > 0) {
+                    setTimeout(() => this.nextQuestion(), 1000);
+                } else {
+                    this.endGame();
+                }
+            }
+
+            createConfetti() {
+                const colors = ['#00ff9d', '#00f7ff', '#ff00f7', '#ff0000', '#00ff00', '#0000ff'];
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    document.body.appendChild(confetti);
+                    
+                    confetti.addEventListener('animationend', () => {
+                        confetti.remove();
+                    });
+                }
+            }
+
+            animateAnswer(isCorrect) {
+                const options = document.querySelectorAll('#options button');
+                options.forEach(button => {
+                    button.classList.add(isCorrect ? 'correct' : 'wrong');
+                    setTimeout(() => {
+                        button.classList.remove('correct', 'wrong');
+                    }, 500);
+                });
+            }
+
+            startTimer() {
+                clearInterval(this.timer);
+                this.timer = setInterval(() => {
+                    if (this.timeLeft <= 0) {
+                        clearInterval(this.timer);
+                        this.endGame();
+                    } else {
+                        this.timeLeft--;
+                        const timerDisplay = document.getElementById('timer');
+                        document.getElementById('timeLeftDisplay').innerText = this.timeLeft;
+                        
+                        if (this.timeLeft <= 10) {
+                            timerDisplay.classList.add('warning');
+                            this.soundManager.playSound('tick');
+                        } else {
+                            timerDisplay.classList.remove('warning');
+                        }
+                    }
+                }, 1000);
+            }
+
+            updateScoreboard() {
+                document.getElementById('score').innerText = 
+                    `Score: ${this.score} | Attempts: ${this.attempts}`;
+            }
+
+            nextQuestion() {
+                this.generateQuestion();
+            }
+
+            endGame() {
+                clearInterval(this.timer);
+                
+                ['options', 'question', 'timer'].forEach(id => {
+                    document.getElementById(id).style.display = 'none';
+                });
+
+                const finalScoreDiv = document.getElementById('finalScore');
+                finalScoreDiv.innerHTML = `
+                    <h2>Game Over!</h2>
+                    <p>Final Score: ${this.score}</p>
+                    <button onclick="game.restartGame()">Play Again</button>
+                    <button onclick="game.quitGame()">Main Menu</button>
+                `;
+                finalScoreDiv.style.display = 'block';
+                
+                this.soundManager.playSound('gameOver');
+            }
+
+            restartGame() {
+                this.score = 0;
+                this.attempts = 3;
+                this.timeLeft = parseInt(document.getElementById('totalTime').value);
+                
+                document.getElementById('finalScore').style.display = 'none';
+                document.getElementById('timer').classList.remove('warning');
+                this.updateScoreboard();
+                this.startTimer();
+                this.nextQuestion();
+                
+                this.soundManager.playSound('tick');
+            }
+
+            quitGame() {
+                clearInterval(this.timer);
+                this.score = 0;
+                this.attempts = 3;
+                this.timeLeft = 60;
+                this.operation = '';
+                this.difficulty = '';
+                
+                ['score', 'finalScore', 'question', 'options', 'timer', 'quitButton'].forEach(id => {
+                    document.getElementById(id).style.display = 'none';
+                });
+                
+                document.getElementById('startButton').style.display = 'block';
+                this.soundManager.playSound('gameOver');
+            }
+        }
+
+        const game = new Game();
+    </script>
+</body>
+</html>
